@@ -26,6 +26,7 @@ module.exports = async function(otpObject, bodyObject, templateConfiguration){
                 subject: emailSubject,
                 body: emailBody
             }
+            infoLogger(bodyObject.id, bodyObject.requestId, 'Setting OTP Data');
             await setKey(`${bodyObject.channelId}_${bodyObject.otpRequestId}`, JSON.stringify(otpObject), redisOtpStorageTTL)
             const response = axiosInstance.post(emailAlertsUrl, requestBody)
                                 .then(res => {

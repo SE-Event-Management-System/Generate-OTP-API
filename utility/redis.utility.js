@@ -5,13 +5,18 @@ const errors = require('../errors/errors')
 
 let client;
 
+
 (async function (){
     client = redis.createClient({
-        host: redisHost,
-        port: redisPort
+        password: 'n5gPpYfCJHONk7iR2ZMkH1O5394AIjcP',
+        socket: {
+            host: redisHost,
+            port: redisPort
+        }
     });
 
     client.on('error', (error) => {
+        console.log(error)
         errorLogger(undefined, undefined, `Redis error: ${error.message}`, error);
     });
 

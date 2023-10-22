@@ -63,6 +63,7 @@ async function generateOtp(req, res, next){
         const isDynamic = isStaticOtp ? whitelist : true;
         const otpObject = generateOtpFunction(isDynamic, channel, templates[channel]);
         if (isDynamic){
+            infoLogger(req.custom.id, req.body.requestId, 'Dynamic OTP will be generated')
             const deliveryRes = deliverOtp(otpObject, req.body, templates[channel]);
             if (deliveryRes.error){
                 return res.status(200).json({

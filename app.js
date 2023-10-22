@@ -47,6 +47,4 @@ app.use((err, req, res, next) => {
     }
 })
 
-app.listen(config.port, async () => {
-    infoLogger(undefined, undefined, `API server has started on port ${config.port}`)
-})
+module.exports = app;

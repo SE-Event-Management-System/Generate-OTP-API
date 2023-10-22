@@ -1,4 +1,9 @@
 require('node:tls').DEFAULT_MIN_VERSION = 'TLSv1.2'
 
-require('./app')
+const app = require('./app')
+const config = require('./config/config')
+const { infoLogger } = require('./logger/logger')
 
+app.listen(config.port, async () => {
+    infoLogger(undefined, undefined, `API server has started on port ${config.port}`)
+})

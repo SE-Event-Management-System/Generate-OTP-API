@@ -8,7 +8,7 @@ if (!envFilePath){
 }
 require('dotenv').config({path: path.resolve(__dirname, `.${envFilePath}.env`)});
 
-const privateKeyPem = fs.readFileSync(process.env.PRIVATE_KEY_FILE_PATH, 'utf8');
+const privateKeyPem = fs.readFileSync(path.join(__dirname, process.env.PRIVATE_KEY_FILE_PATH), 'utf8');
 const privateKey = forge.pki.privateKeyFromPem(privateKeyPem); 
 
 module.exports = {
@@ -20,8 +20,9 @@ module.exports = {
     encryptionIV: privateKey.decrypt(forge.util.decode64(process.env.ENCRYPTION_IV)),
     redisHost: process.env.REDIS_HOST,
     redisPort: process.env.REDIS_PORT,
-    templatesPath: process.env.TEMPLATES_PATH,
-    whitelistPath: process.env.WHITELIST_PATH,
+    redisPassword: process.env.REDIS_PASSWORD,
+    templatesPath: path.join(__dirname, process.env.TEMPLATES_PATH),
+    whitelistPath: path.join(__dirname, process.env.WHITELIST_PATH),
     maxOtpCountLimit: +process.env.MAX_OTP_COUNT_LIMIT,
     maxOtpCountLimitTimeInSec: +process.env.MAX_OTP_COUNT_LIMIT_TIME_IN_SEC,
     isStaticOtp: JSON.parse(process.env.IS_STATIC_OTP),
