@@ -1,12 +1,12 @@
 const {infoLogger, errorLogger} = require('../../logger/logger');
 const errors = require('../../errors/errors');
-const {templatesPath, whitelistPath, isStaticOtp} = require('../../config/config')
+const {templatesPath, whitelistPath, isStaticOtp, redisOtpStorageTTL} = require('../../config/config')
 const templates = require(templatesPath);
 const whitelistings = require(whitelistPath);
 const otpFlooding = require('./helpers/otpFloodingCheck');
 const generateOtpFunction = require('./helpers/generateOtp');
 const deliverOtp = require('./helpers/deliverOtp');
-const { getKey } = require('../../utility/redis.utility');
+const { getKey, setKey } = require('../../utility/redis.utility');
 
 async function generateOtp(req, res, next){
     try{
@@ -62,9 +62,13 @@ async function generateOtp(req, res, next){
         const whitelist =  whitelistings.email.includes(req.body.email);
         const isDynamic = isStaticOtp ? whitelist : true;
         const otpObject = generateOtpFunction(isDynamic, channel, templates[channel]);
+        infoLogger(req.custom.id, req.body.requestId, 'Setting OTP Data');
+        const otpObjectCopy = {...otpObject}
+        delete otpObject.OTP;
+        await setKey(`${req.body.channelId}_${req.body.otpRequestId}`, JSON.stringify(otpObject), redisOtpStorageTTL)
         if (isDynamic){
             infoLogger(req.custom.id, req.body.requestId, 'Dynamic OTP will be generated')
-            const deliveryRes = deliverOtp(otpObject, req.body, templates[channel]);
+            const deliveryRes = deliverOtp(otpObjectCopy, req.body, templates[channel]);
             if (deliveryRes.error){
                 return res.status(200).json({
                     statusCode: 1,
@@ -83,6 +87,9 @@ async function generateOtp(req, res, next){
             statusCode: 0,
             timestamp: Date.now(),
             requestId: req.body.requestId,
+            data: {
+                otpRequestId: req.body.otpRequestId
+            },
             info: {
                 code: errors['000'].code,
                 message: errors['000'].message,

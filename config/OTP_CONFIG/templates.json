@@ -4,6 +4,7 @@
 		"EMAIL_SUBJECT": "EMS OTP for login",
 		"EMAIL_BODY": "Dear Customer,<BR/><BR/>{TOKEN2} is the OTP (One Time Password) for your login. This OTP is valid only for {TOKEN3} seconds.<BR/><BR/>Please do not share this OTP with anyone.<BR/><BR/>Regards,<BR/>EMS<BR/><BR/>(This is an auto generated email, please do not reply)",
 		"EXPIRY_TIME_IN_SEC": 100,
-		"IS_MIN": false
+		"IS_MIN": false,
+		"INVALID_ATTEMPTS": 3
 	}
 }

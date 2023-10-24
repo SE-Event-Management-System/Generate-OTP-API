@@ -15,6 +15,8 @@ module.exports = function(isWhitelisted, channel, channelConfigurations){
         CREATED_TIMESTAMP: createdTime,
         EXPIRY_TIMESTAMP: expiryTime,
         EXPIRY_TIME: EXPIRY_TIME_IN_SEC,
-        CHANNEL_ID: channel
+        CHANNEL_ID: channel,
+        INVALID_ATTEMPTS: 0,
+        TOTAL_INVALID_ATTEMPTS: channelConfigurations.INVALID_ATTEMPTS
     }
 }

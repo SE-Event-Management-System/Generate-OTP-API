@@ -15,10 +15,8 @@ module.exports = async function(otpObject, bodyObject, templateConfiguration){
         const {EMAIL_SUBJECT, EMAIL_BODY, EXPIRY_TIME_IN_SEC} = templateConfiguration;
         let emailBody = EMAIL_BODY.replace('{TOKEN2}', otpObject.OTP)
                                     .replace('{TOKEN3}', EXPIRY_TIME_IN_SEC);
-        delete otpObject.otp;
         const emailSubject = encrypt(EMAIL_SUBJECT);
         emailBody  = encrypt(emailBody);
-
         if (bodyObject.deliveryFlag == 'E' && bodyObject.serviceType == 'N'){
             const requestBody = {
                 requestId: bodyObject.requestId,
@@ -26,8 +24,7 @@ module.exports = async function(otpObject, bodyObject, templateConfiguration){
                 subject: emailSubject,
                 body: emailBody
             }
-            infoLogger(bodyObject.id, bodyObject.requestId, 'Setting OTP Data');
-            await setKey(`${bodyObject.channelId}_${bodyObject.otpRequestId}`, JSON.stringify(otpObject), redisOtpStorageTTL)
+            infoLogger(bodyObject.id, bodyObject.requestId, 'Sending Email OTP')
             const response = axiosInstance.post(emailAlertsUrl, requestBody)
                                 .then(res => {
                                     infoLogger(bodyObject.id, bodyObject.requestId, 'Succesfully sent an email');
