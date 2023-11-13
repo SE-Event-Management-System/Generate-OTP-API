@@ -12,9 +12,13 @@ const axiosInstance = axios.create({
 
 module.exports = async function(otpObject, bodyObject, templateConfiguration){
     try{
-        const {EMAIL_SUBJECT, EMAIL_BODY, EXPIRY_TIME_IN_SEC} = templateConfiguration;
+        const {EMAIL_SUBJECT, EMAIL_BODY, EXPIRY_TIME_IN_SEC, IS_MIN} = templateConfiguration;
+        let newExpiryTime = EXPIRY_TIME_IN_SEC;
+        if (IS_MIN){
+            newExpiryTime = EXPIRY_TIME_IN_SEC/60;
+        }
         let emailBody = EMAIL_BODY.replace('{TOKEN2}', otpObject.OTP)
-                                    .replace('{TOKEN3}', EXPIRY_TIME_IN_SEC);
+                                    .replace('{TOKEN3}', newExpiryTime);
         const emailSubject = encrypt(EMAIL_SUBJECT);
         emailBody  = encrypt(emailBody);
         if (bodyObject.deliveryFlag == 'E' && bodyObject.serviceType == 'N'){
